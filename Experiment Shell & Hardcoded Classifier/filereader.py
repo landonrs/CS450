@@ -32,6 +32,7 @@ class FileReader(object):
         # get the targets by grabbing the last col of the data set
         data_targets = data_set.iloc[:, -1]
         # print(data_targets)
+        # print(data_set.iloc[:, :-1].as_matrix())
 
         # return the data and targets as matrices to work with skLearn
         return data_set.iloc[:, :-1].as_matrix(), data_targets.as_matrix()

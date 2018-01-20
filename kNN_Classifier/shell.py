@@ -55,6 +55,7 @@ class Shell(object):
 
 
 def main():
+    running = True
     shell = Shell()
     decision = input("Load data from file? y/n")
 
@@ -64,18 +65,26 @@ def main():
         shell.data_set = shell.iris.data
         shell.data_targets = shell.iris.target
 
-    # part 1
-    shell.prepare_data_set(shell.data_set, shell.data_targets)
-    shell.create_model(KNNClassifier(5))
-    shell.predict()
-    # print(shell.test_targets)
-    print("my model's accuracy:")
-    shell.determine_accuracy()
+    while running:
+        neighbors = int(input("enter number of neighbors to use (k value must be less than 105):"))
 
-    # part 2
-    print("skLearn model accuracy: ")
-    shell.create_model(KNeighborsClassifier(n_neighbors=5))
-    shell.predict()
-    shell.determine_accuracy()
+        # part 1
+        shell.prepare_data_set(shell.data_set, shell.data_targets)
+        shell.create_model(KNNClassifier(neighbors))
+        shell.predict()
+        # print(shell.test_targets)
+        print("my model's accuracy:")
+        shell.determine_accuracy()
+
+        # part 2
+        print("skLearn model accuracy: ")
+        shell.create_model(KNeighborsClassifier(n_neighbors=neighbors))
+        shell.predict()
+        shell.determine_accuracy()
+        testing = input("Test with different k value? y/n")
+        if testing == 'y':
+            continue
+        else:
+            break
 
 main()
