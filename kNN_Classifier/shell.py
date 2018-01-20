@@ -1,6 +1,7 @@
 from sklearn import datasets
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
 
 from sklearn.neighbors import KNeighborsClassifier
 from kNNClassifier import *
@@ -35,6 +36,11 @@ class Shell(object):
         # print("Test Data")
         # for index, target in enumerate(self.test_targets):
         #     print("data:" + str(self.iris.data[index]) + " Target: " + str(target) + " number: " + str(index))
+
+        # Now we will transform the data using the standard scalar class
+        scaler = preprocessing.StandardScaler().fit(self.training_data)
+        self.training_data = scaler.transform(self.training_data)
+        self.test_data = scaler.transform(self.test_data)
 
     def create_model(self, classifier):
         self.classifier = classifier
