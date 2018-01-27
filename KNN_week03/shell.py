@@ -14,7 +14,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from kNNClassifier import *
 from filereader import FileReader
 
-K_VALUE = 25
+K_VALUE = 3
 
 class Shell(object):
 
@@ -74,11 +74,11 @@ class Shell(object):
         # print(self.predicted_targets)
         # self.test_targets = np.round(self.test_targets, 3)
         # print(self.test_targets)
-        print(mean_squared_error(self.test_targets, self.predicted_targets))
+        print(mean_absolute_error(self.test_targets, self.predicted_targets))
 
 
     def cross_val_test(self, data, targets, test_type):
-        if test_type == 'neg_mean_squared_error':
+        if test_type == 'neg_mean_absolute_error':
             skKNN = KNeighborsRegressor(n_neighbors=K_VALUE)
         else:
             skKNN = KNeighborsClassifier(n_neighbors=K_VALUE)
@@ -105,7 +105,7 @@ class Shell(object):
 
 
 def week_3_main():
-    regression_test_type = 'neg_mean_squared_error'
+    regression_test_type = 'neg_mean_absolute_error'
     class_test_type = 'accuracy'
 
     # part 1
