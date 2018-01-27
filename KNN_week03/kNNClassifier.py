@@ -11,8 +11,6 @@ class KNNClassifier(BaseEstimator):
         self.knn_model = KNNModel(training_data, training_targets, self.k)
         return self.knn_model
 
-    def score(self, estimator, X, y):
-        return 0
 
     def predict(self, test_data):
         return self.knn_model.predict(test_data)
