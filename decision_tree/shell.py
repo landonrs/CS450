@@ -106,7 +106,7 @@ def main():
 
     tree = ID3Classifier()
     tree_model = tree.fit(panda_dataframe, panda_dataframe['Loan'].values.tolist())
-    print(tree_model)
+    print(tree_model.tree_node_list)
 
 main()
 

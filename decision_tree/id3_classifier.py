@@ -86,7 +86,14 @@ class ID3Classifier:
 
 
     def fit(self, dataframe, targets):
-        return self.create_tree(dataframe, targets, list(dataframe)[0:-1])
+        tree_model = TreeModel()
+        tree_model.tree_node_list = self.create_tree(dataframe, targets, list(dataframe)[0:-1])
+        return tree_model
+
+class TreeModel:
+
+    def __init__(self):
+        self.tree_node_list = None
 
 
 
