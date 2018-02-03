@@ -105,8 +105,8 @@ def main():
     # print(list(panda_dataframe)[0:-1])
 
     tree = ID3Classifier()
-    tree = tree.create_tree(panda_dataframe, panda_dataframe['Loan'].values.tolist(), list(panda_dataframe)[0:-1])
-    print(tree)
+    tree_dictionary = tree.create_tree(panda_dataframe, panda_dataframe['Loan'].values.tolist(), list(panda_dataframe)[0:-1])
+    print(tree_dictionary)
 
 main()
 
