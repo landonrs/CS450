@@ -105,8 +105,11 @@ def main():
     # print(list(panda_dataframe)[0:-1])
 
     tree = ID3Classifier()
-    tree_model = tree.fit(panda_dataframe, panda_dataframe['Loan'].values.tolist())
+    tree_model = tree.fit(dataframe=panda_dataframe, targets=panda_dataframe['Loan'].values.tolist(),
+                          column_names=list(panda_dataframe)[0:-1])
     print(tree_model.tree_node_list)
+    shell.predicted_targets = tree_model.predict(panda_dataframe)
+    shell.determine_accuracy()
 
 main()
 

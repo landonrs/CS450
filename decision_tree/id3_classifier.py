@@ -84,16 +84,44 @@ class ID3Classifier:
                 tree_node_list[best_feature_name][value] = subtree
             return tree_node_list
 
-
-    def fit(self, dataframe, targets):
-        tree_model = TreeModel()
-        tree_model.tree_node_list = self.create_tree(dataframe, targets, list(dataframe)[0:-1])
+    def fit(self, dataframe, targets, column_names):
+        tree_model = TreeModel(column_names)
+        tree_model.tree_node_list = self.create_tree(dataframe, targets, column_names)
         return tree_model
+
 
 class TreeModel:
 
-    def __init__(self):
+    def __init__(self, column_names):
         self.tree_node_list = None
+        self.node_names = column_names
+
+    def predict(self, test_data):
+        predicted_targets = []
+
+        for column_name in test_data:
+            if column_name in self.tree_node_list:
+                print("first node is: " + column_name)
+                for idx, row in test_data.iterrows():
+                    # print(self.tree_node_list[column_name])
+                    predicted_targets.append(self.traverse_tree(self.tree_node_list, row, column_name))
+
+        return predicted_targets
+
+    def traverse_tree(self, dictionary, data, branch_name):
+
+        if not isinstance(dictionary[branch_name], dict):
+            return dictionary[branch_name]
+
+        if branch_name not in self.node_names:
+            print(list(dictionary[branch_name].keys())[0])
+            target_value = self.traverse_tree(dictionary[branch_name], data, list(dictionary[branch_name].keys())[0])
+        else:
+            print(data[branch_name])
+            target_value = self.traverse_tree(dictionary[branch_name], data, data[branch_name])
+
+        return target_value
+
 
 
 
