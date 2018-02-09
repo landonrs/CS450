@@ -2,9 +2,11 @@ import numpy as np
 
 class ID3Classifier:
 
-    def __init__(self):
+    def __init__(self, target_column, most_common):
         self.tree_node_list = {}
         self.next_node = None
+        self.target_column_name = target_column
+        self.most_common = most_common
 
     def calculate_branch_entropy(self, targets):
         """determine the starting entropy for the current data set so the info gain can be later determined"""
@@ -79,29 +81,30 @@ class ID3Classifier:
             for value in all_feature_values[best_feature]:
                 new_data = data.loc[data[best_feature_name] == value]
                 # print(new_data)
-                subtree = self.create_tree(new_data, new_data['Loan'].values.tolist(), new_names)
+                subtree = self.create_tree(new_data, new_data[self.target_column_name].values.tolist(), new_names)
 
                 tree_node_list[best_feature_name][value] = subtree
             return tree_node_list
 
     def fit(self, dataframe, targets, column_names):
-        tree_model = TreeModel(column_names)
+        tree_model = TreeModel(column_names, self.most_common)
         tree_model.tree_node_list = self.create_tree(dataframe, targets, column_names)
         return tree_model
 
 
 class TreeModel:
 
-    def __init__(self, column_names):
+    def __init__(self, column_names, most_common):
         self.tree_node_list = None
         self.node_names = column_names
+        self.most_common = most_common
 
     def predict(self, test_data):
         predicted_targets = []
 
         for column_name in test_data:
             if column_name in self.tree_node_list:
-                print("first node is: " + column_name)
+                # print("first node is: " + column_name)
                 for idx, row in test_data.iterrows():
                     # print(self.tree_node_list[column_name])
                     predicted_targets.append(self.traverse_tree(self.tree_node_list, row, column_name))
@@ -110,14 +113,17 @@ class TreeModel:
 
     def traverse_tree(self, dictionary, data, branch_name):
 
+        # in the event that there is no pre-existing branch for this route, create a leaf node with most frequent class
+        dictionary[branch_name] = dictionary.get(branch_name, self.most_common)
+
         if not isinstance(dictionary[branch_name], dict):
             return dictionary[branch_name]
 
         if branch_name not in self.node_names:
-            print(list(dictionary[branch_name].keys())[0])
+            # print(list(dictionary[branch_name].keys())[0])
             target_value = self.traverse_tree(dictionary[branch_name], data, list(dictionary[branch_name].keys())[0])
         else:
-            print(data[branch_name])
+            # print(data[branch_name])
             target_value = self.traverse_tree(dictionary[branch_name], data, data[branch_name])
 
         return target_value
