@@ -21,15 +21,17 @@ class NeuralNetwork:
         It then iterates through each row in the training data and determines the
         h and a values for each node to find the output"""
         # first determine the number of attributes
-        num_attributes = len(training_data[0])
+        num_attributes = training_data.shape[1]
         for node in self.node_layer:
             node.create_random_weights(num_attributes)
 
         for row in training_data:
+            node_instance_ouput = []
             for node in self.node_layer:
                 node.determine_h_value(row)
-                self.output.append(node.determine_a_value())
-            print("output for this row was {}".format(self.output))
+                node_instance_ouput.append(node.determine_a_value())
+            self.output.append(node_instance_ouput)
+            print("output for this row was {}".format(node_instance_ouput))
 
 
 class Neuron:
@@ -46,19 +48,23 @@ class Neuron:
         # finally add the value for the bias node
         input_sum += (-1 * self.weights[-1])
         self.h = input_sum
-        print(self.h)
+        print("h value = {}".format(self.h))
 
     def determine_a_value(self):
         self.a = 1 / (1 + math.exp(-1 * self.h))
         print("a value = {}".format(self.a))
+        if self.a < 0.5:
+            return 0
+        else:
+            return 1
 
     def create_random_weights(self, input_number):
         count = 0
         # here we set it less than or equal so we add an extra weight for the bias node
         while count <= input_number:
             weight = random.uniform(-0.4, 0.4)
-            print("weight {}: {}".format(count, weight))
+            # print("weight {}: {}".format(count, weight))
             self.weights.append(weight)
-        print(len(self.weights))
+            count += 1
 
 

@@ -1,18 +1,11 @@
 from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
-from sklearn.model_selection import KFold
-from sklearn.model_selection import cross_val_score
 import numpy as np
 
-from sklearn.metrics import mean_squared_error
 from sklearn.metrics import mean_absolute_error
-from sklearn.metrics import median_absolute_error
-
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neighbors import KNeighborsRegressor
-from kNNClassifier import *
 from filereader import FileReader
+from neuralnetwork import NeuralNetwork
 
 K_VALUE = 3
 
@@ -77,27 +70,6 @@ class Shell(object):
         # print(self.test_targets)
         print(mean_absolute_error(self.test_targets, self.predicted_targets))
 
-
-    def cross_val_test(self, data, targets, test_type):
-        if test_type == 'neg_mean_absolute_error':
-            skKNN = KNeighborsRegressor(n_neighbors=K_VALUE)
-        else:
-            skKNN = KNeighborsClassifier(n_neighbors=K_VALUE)
-
-        knn = KNNClassifier(K_VALUE)
-        print("my model: ")
-        scores = cross_val_score(knn, data, targets, scoring=test_type, cv=10)
-        print(scores)
-        final_score = self.average_score(scores)
-        print(final_score)
-
-        print("sklearn model: ")
-        scores = cross_val_score(skKNN, data, targets, scoring=test_type, cv=10)
-        print(scores)
-        final_score = self.average_score(scores)
-        print(final_score)
-
-
     def average_score(self, scores):
         total_score = 0
         for score in scores:
@@ -105,41 +77,25 @@ class Shell(object):
         return abs(total_score / 10)
 
 
-def week_3_main():
-    regression_test_type = 'neg_mean_absolute_error'
-    class_test_type = 'accuracy'
-
-    # part 1
+def week_6_main():
+    test_row = np.array([[1, 2]])
+    test_targets = [0, 1]
     shell = Shell()
-    shell.data_set, shell.data_targets = shell.file_reader.read_car_data()
+    # part 1, iris dataset
+    print("iris data output")
+    shell.data_set, shell.data_targets = shell.file_reader.read_data_from_file("iris.csv")
     shell.prepare_data_set(shell.data_set, shell.data_targets)
-    shell.create_model(KNNClassifier(K_VALUE))
-    shell.predict()
-    print("my model's accuracy for car classification test:")
-    shell.determine_accuracy()
-    print("cross validation test results")
-    shell.cross_val_test(shell.data_set, shell.data_targets, class_test_type)
+    network = NeuralNetwork(3)
+    network.fit(shell.training_data, shell.training_targets)
 
-
-    # part 2
+    # part 2 diabetes dataset
+    print("Diabetes Data output:")
     shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
     shell.prepare_data_set(shell.data_set, shell.data_targets)
-    shell.create_model(KNNClassifier(K_VALUE))
-    shell.predict()
-    print("diabetes data target accuracy:")
-    shell.determine_accuracy()
-    print("cross validation test results")
-    shell.cross_val_test(shell.data_set, shell.data_targets, class_test_type)
-
-    # part 3
-    shell.data_set, shell.data_targets = shell.file_reader.read_mpg_data()
-    shell.prepare_data_set(shell.data_set, shell.data_targets)
-    shell.create_model(KNNClassifier(K_VALUE))
-    shell.predict()
-    print("MPG regression results (note: the closer to 0, the better the predictions):")
-    shell.determine_regression_accuracy()
-    print("cross validation results")
-    shell.cross_val_test(shell.data_set, shell.data_targets, regression_test_type)
+    network.fit(shell.training_data, shell.training_targets)
 
 
-week_3_main()
+
+
+
+week_6_main()
