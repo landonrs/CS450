@@ -43,8 +43,8 @@ class Shell(object):
         scaler = preprocessing.StandardScaler().fit(self.training_data)
         self.training_data = scaler.transform(self.training_data)
         self.test_data = scaler.transform(self.test_data)
-        self.training_data = np.round(self.training_data, 2)
-        self.test_data = np.round(self.test_data, 2)
+        # self.training_data = np.round(self.training_data, 2)
+        # self.test_data = np.round(self.test_data, 2)
 
     def create_model(self, classifier):
         self.classifier = classifier
@@ -78,21 +78,22 @@ class Shell(object):
 
 
 def week_6_main():
-    test_row = np.array([[1, 2]])
-    test_targets = [0, 1]
+    # test_row = np.array([[1, 2]])
+    # test_targets = [0, 1]
     shell = Shell()
     # part 1, iris dataset
     print("iris data output")
     shell.data_set, shell.data_targets = shell.file_reader.read_data_from_file("iris.csv")
     shell.prepare_data_set(shell.data_set, shell.data_targets)
-    network = NeuralNetwork(3)
-    network.fit(shell.training_data, shell.training_targets)
+    network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 3])
+    shell.predicted_targets = network.fit(shell.training_data, shell.training_targets)
+    shell.determine_accuracy()
 
     # part 2 diabetes dataset
-    print("Diabetes Data output:")
-    shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
-    shell.prepare_data_set(shell.data_set, shell.data_targets)
-    network.fit(shell.training_data, shell.training_targets)
+    # print("Diabetes Data output:")
+    # shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
+    # shell.prepare_data_set(shell.data_set, shell.data_targets)
+    # network.fit(shell.training_data, shell.training_targets)
 
 
 
