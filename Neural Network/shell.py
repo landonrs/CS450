@@ -1,6 +1,7 @@
 from sklearn import datasets, linear_model
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
+from sklearn.neural_network import MLPClassifier
 import numpy as np
 
 from sklearn.metrics import mean_absolute_error
@@ -79,21 +80,39 @@ class Shell(object):
 
 def week_6_main():
     # test_row = np.array([[1, 2]])
-    # test_targets = [0, 1]
+    # test_targets = [1]
     shell = Shell()
     # part 1, iris dataset
     print("iris data output")
     shell.data_set, shell.data_targets = shell.file_reader.read_data_from_file("iris.csv")
     shell.prepare_data_set(shell.data_set, shell.data_targets)
-    network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 3])
-    shell.predicted_targets = network.fit(shell.training_data, shell.training_targets)
+    network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 3], learning_rate=.2)
+    network.generate_weights(num_inputs=shell.training_data.shape[1])
+    for i in range(1000):
+        network.fit(shell.training_data, shell.training_targets)
+    shell.predicted_targets = network.fit(shell.test_data, shell.test_targets)
+    shell.determine_accuracy()
+    print("sklearn implementation for iris")
+    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(2, 2), solver='sgd', learning_rate_init=.2, max_iter=1000)
+    sklearn_MLP.fit(shell.training_data, shell.training_targets)
+    shell.predicted_targets = sklearn_MLP.predict(shell.test_data)
     shell.determine_accuracy()
 
     # part 2 diabetes dataset
-    # print("Diabetes Data output:")
-    # shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
-    # shell.prepare_data_set(shell.data_set, shell.data_targets)
-    # network.fit(shell.training_data, shell.training_targets)
+    print("Diabetes Data output:")
+    shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
+    shell.prepare_data_set(shell.data_set, shell.data_targets)
+    network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 2], learning_rate=.2)
+    network.generate_weights(num_inputs=shell.training_data.shape[1])
+    for i in range(200):
+        network.fit(shell.training_data, shell.training_targets)
+    shell.predicted_targets = network.fit(shell.test_data, shell.test_targets)
+    shell.determine_accuracy()
+    print("sklearn implementation")
+    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(2, 2), solver='sgd', learning_rate_init=.2, max_iter=10000)
+    sklearn_MLP.fit(shell.training_data, shell.training_targets)
+    shell.predicted_targets = sklearn_MLP.predict(shell.test_data)
+    shell.determine_accuracy()
 
 
 
