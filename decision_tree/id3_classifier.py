@@ -9,7 +9,7 @@ class ID3Classifier:
         self.most_common = most_common
 
     def calculate_branch_entropy(self, targets):
-        """determine the starting entropy for the current data set so the info gain can be later determined"""
+        """determine the entropy for the branch so the info gain can be determined"""
         branch_entropy = 0
         total_targets = len(targets)
         class_frequencies = []
@@ -19,8 +19,6 @@ class ID3Classifier:
         for probability in class_frequencies:
             branch_entropy -= self.calculate_entropy(probability)
         return branch_entropy
-
-
 
     def calculate_entropy(self, probability):
         if probability != 0:

@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error
 from filereader import FileReader
 from neuralnetwork import NeuralNetwork
 
-K_VALUE = 3
+import pandas
 
 
 class Shell(object):
@@ -64,12 +64,13 @@ class Shell(object):
         accuracy = correct_predictions / len(self.test_targets)
         print("%{0:.2f}".format(accuracy * 100))
 
-    def determine_regression_accuracy(self):
-        # self.predicted_targets = np.round(self.predicted_targets, 3)
-        # print(self.predicted_targets)
-        # self.test_targets = np.round(self.test_targets, 3)
-        # print(self.test_targets)
-        print(mean_absolute_error(self.test_targets, self.predicted_targets))
+    def determine_training_accuracy(self, p_targets):
+        correct_predictions = 0
+        for index, target in enumerate(self.training_targets):
+            if p_targets[index] == self.training_targets[index]:
+                correct_predictions += 1
+        accuracy = correct_predictions / len(self.training_targets)
+        return accuracy
 
     def average_score(self, scores):
         total_score = 0
@@ -81,19 +82,29 @@ class Shell(object):
 def week_6_main():
     # test_row = np.array([[1, 2]])
     # test_targets = [1]
+
+    # accuracy_record = np.array([['epoch num', 'accuracy']])
     shell = Shell()
-    # part 1, iris dataset
+    # # part 1, iris dataset
     print("iris data output")
     shell.data_set, shell.data_targets = shell.file_reader.read_data_from_file("iris.csv")
     shell.prepare_data_set(shell.data_set, shell.data_targets)
     network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 3], learning_rate=.2)
     network.generate_weights(num_inputs=shell.training_data.shape[1])
-    for i in range(1000):
-        network.fit(shell.training_data, shell.training_targets)
+    for i in range(50):
+        p_targets = network.fit(shell.training_data, shell.training_targets)
+        # epoch_accuracy = shell.determine_training_accuracy(p_targets)
+        # accuracy_record = np.append(accuracy_record, [[i, epoch_accuracy]], axis=0)
+
+    # record the data to csv file
+    # accuracy_df = pandas.DataFrame(data=list(accuracy_record[1:]), columns=list(accuracy_record[0]))
+    # print(accuracy_df)
+    # accuracy_df.to_csv("NN_accuracy.csv", index=False)
+
     shell.predicted_targets = network.fit(shell.test_data, shell.test_targets)
     shell.determine_accuracy()
     print("sklearn implementation for iris")
-    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(2, 2), solver='sgd', learning_rate_init=.2, max_iter=1000)
+    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(2, 3), solver='sgd', learning_rate_init=.2, max_iter=1000)
     sklearn_MLP.fit(shell.training_data, shell.training_targets)
     shell.predicted_targets = sklearn_MLP.predict(shell.test_data)
     shell.determine_accuracy()
@@ -102,14 +113,21 @@ def week_6_main():
     print("Diabetes Data output:")
     shell.data_set, shell.data_targets = shell.file_reader.read_diabetes_data()
     shell.prepare_data_set(shell.data_set, shell.data_targets)
-    network = NeuralNetwork(num_layers=2, nodes_per_layer=[2, 2], learning_rate=.2)
+    network = NeuralNetwork(num_layers=4, nodes_per_layer=[8, 4, 3, 2], learning_rate=.2)
     network.generate_weights(num_inputs=shell.training_data.shape[1])
     for i in range(200):
-        network.fit(shell.training_data, shell.training_targets)
+        p_targets = network.fit(shell.training_data, shell.training_targets)
+        # epoch_accuracy = shell.determine_training_accuracy(p_targets)
+        # accuracy_record = np.append(accuracy_record, [[i, epoch_accuracy]], axis=0)
+
+    # record to csv
+    # accuracy_df = pandas.DataFrame(data=list(accuracy_record[1:]), columns=list(accuracy_record[0]))
+    # print(accuracy_df)
+    # accuracy_df.to_csv("PIMA_accuracy.csv", index=False)
     shell.predicted_targets = network.fit(shell.test_data, shell.test_targets)
     shell.determine_accuracy()
     print("sklearn implementation")
-    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(2, 2), solver='sgd', learning_rate_init=.2, max_iter=10000)
+    sklearn_MLP = MLPClassifier(hidden_layer_sizes=(8, 4, 3, 2), solver='sgd', learning_rate_init=.2, max_iter=10000)
     sklearn_MLP.fit(shell.training_data, shell.training_targets)
     shell.predicted_targets = sklearn_MLP.predict(shell.test_data)
     shell.determine_accuracy()

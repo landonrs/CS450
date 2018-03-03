@@ -46,10 +46,10 @@ class NeuralNetwork:
 
 
     def fit(self, training_data, training_targets):
-        """Takes in a numpy array of training data and a list of targets
-        and creates connections between the inputs and the node layer.
-        It then iterates through each row in the training data and determines the
-        h and a values for each node to find the output"""
+        """Takes in a numpy array of training data and a list of targets.
+        It iterates through each row in the training data and determines the
+        h and a values for each node to find the output. It then predicts the class
+        given the highest a value of the output nodes. Weights are then adjusted."""
         predicted_targets = []
         layer_output = []
         for index, row in enumerate(training_data):

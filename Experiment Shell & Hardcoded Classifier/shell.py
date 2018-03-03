@@ -1,8 +1,8 @@
 from sklearn import datasets
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
-from HardCodedClassifier import *
-from filereader import FileReader
+# from HardCodedClassifier import *
+# from filereader import FileReader
 
 
 class Shell(object):
